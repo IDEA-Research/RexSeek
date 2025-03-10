@@ -1,13 +1,16 @@
 import torch
 from rexseek.model.architecture import RexSeekQwenForCausalLM
-from rexseek.utils import (DEFAULT_GROUNDING_END,
-                           DEFAULT_GROUNDING_OBJECTS_END,
-                           DEFAULT_GROUNDING_OBJECTS_START,
-                           DEFAULT_GROUNDING_START, DEFAULT_OBJECT_TOKEN)
+from rexseek.utils import (
+    DEFAULT_GROUNDING_END,
+    DEFAULT_GROUNDING_OBJECTS_END,
+    DEFAULT_GROUNDING_OBJECTS_START,
+    DEFAULT_GROUNDING_START,
+    DEFAULT_OBJECT_TOKEN,
+)
 from transformers import AutoTokenizer, BitsAndBytesConfig
 
 
-def load_chatrex_model(
+def load_rexseek_model(
     model_path,
     load_8bit=False,
     load_4bit=False,
@@ -55,11 +58,9 @@ def load_chatrex_model(
             if add_token not in tokenizer.get_vocab():
                 tokenizer.add_tokens([add_token], special_tokens=True)
 
-
     model = RexSeekQwenForCausalLM.from_pretrained(
         model_path, low_cpu_mem_usage=True, delay_load=False, **kwargs
     )
-
 
     image_processor = None
 
@@ -69,11 +70,11 @@ def load_chatrex_model(
     if device_map != "auto":
         vision_tower.to(device=device_map, dtype=torch.float16)
 
-    vision_tower_aux = model.get_vision_tower_aux()
-    if not vision_tower_aux.is_loaded:
-        vision_tower_aux.load_model(device_map=device_map)
-    if device_map != "auto":
-        vision_tower_aux.to(device=device_map, dtype=torch.float16)
+    # vision_tower_aux = model.get_vision_tower_aux()
+    # if not vision_tower_aux.is_loaded:
+    #     vision_tower_aux.load_model(device_map=device_map)
+    # if device_map != "auto":
+    #     vision_tower_aux.to(device=device_map, dtype=torch.float16)
 
     image_processor = vision_tower.image_processor
 

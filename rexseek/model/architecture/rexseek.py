@@ -2,11 +2,19 @@ from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
-from rexseek.model.projector.builder import build_vision_projector
-from rexseek.model.vision_encoder.builder import (
-    build_vision_tower,
-    build_vision_tower_aux,
+from transformers import (
+    AutoConfig,
+    AutoModelForCausalLM,
+    Qwen2Config,
+    Qwen2ForCausalLM,
+    Qwen2Model,
 )
+from transformers.generation.utils import GenerateOutput
+from transformers.modeling_outputs import CausalLMOutputWithPast
+
+from rexseek.model.projector.builder import build_vision_projector
+from rexseek.model.vision_encoder.builder import build_vision_tower
+from rexseek.model.vision_encoder.convnext import ConvNextVisionEncoder
 from rexseek.model.visual_prompt_encoder import MultiLevelROIVisualPrompt
 from rexseek.utils.constants import (
     DEFAULT_GROUNDING_END,
@@ -19,15 +27,6 @@ from rexseek.utils.constants import (
     IMAGE_TOKEN_INDEX,
     MAX_NUM_OBJECTS,
 )
-from transformers import (
-    AutoConfig,
-    AutoModelForCausalLM,
-    Qwen2Config,
-    Qwen2ForCausalLM,
-    Qwen2Model,
-)
-from transformers.generation.utils import GenerateOutput
-from transformers.modeling_outputs import CausalLMOutputWithPast
 
 
 def get_token_slices(input_ids):
@@ -94,9 +93,7 @@ class RexSeekQwenForCausalLM(Qwen2ForCausalLM):
             self.vision_tower = build_vision_tower(
                 config, freeze_vision_tower=False, delay_load=delay_load
             )  # vision_tower
-            self.vision_tower_aux = build_vision_tower_aux(
-                config, freeze_vision_tower=False, delay_load=delay_load
-            )
+            self.vision_tower_aux = ConvNextVisionEncoder()
             self.mm_projector = build_vision_projector(
                 config, start_hidden_size=2560
             )  # projector for vision_tower

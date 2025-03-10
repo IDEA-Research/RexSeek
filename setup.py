@@ -93,9 +93,7 @@ if __name__ == "__main__":
     setup(
         name="rexseek",
         version=get_version(),
-        description=(
-            "RexSeek model"
-        ),
+        description=("RexSeek model"),
         packages=find_packages(),
         include_package_data=True,
         classifiers=[
@@ -110,6 +108,6 @@ if __name__ == "__main__":
         ],
         # Python maximum version <3.11, to support mpi4py-mpich
         python_requires=">=3.8, <3.11",
-        license="Apache License 2.0",
+        license="IDEA License 1.0",
         zip_safe=False,
     )
