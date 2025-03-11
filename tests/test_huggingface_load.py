@@ -7,7 +7,7 @@ from transformers import AutoModelForCausalLM, AutoProcessor, AutoTokenizer
 from rexseek.tools import visualize_rexseek_output
 
 if __name__ == "__main__":
-    model_path = "RexSeek-3B"
+    model_path = "IDEA-Research/RexSeek-3B"
     # load the processor
     processor = AutoProcessor.from_pretrained(
         model_path,

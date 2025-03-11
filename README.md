@@ -7,8 +7,9 @@
 
 <div align=center>
 
-![Static Badge](https://img.shields.io/badge/Chat-Rex-red) [![arXiv preprint](https://img.shields.io/badge/arxiv_2411.18363-blue%253Flog%253Darxiv
-)](https://arxiv.org/abs/2411.18363)  [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIDEA-Research%2FChatRex&count_bg=%2379C83D&title_bg=%23F4A6A6&icon=waze.svg&icon_color=%23E7E7E7&title=VISITORS&edge_flat=false)](https://hits.seeyoufarm.com)
+![Static Badge](https://img.shields.io/badge/Rex-Seek-Red
+) [![arXiv preprint](https://img.shields.io/badge/arxiv_2411.18363-blue%253Flog%253Darxiv
+)](https://arxiv.org/abs/2411.18363)  [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIDEA-Research%2FRexSeek&count_bg=%233FAEF1&title_bg=%23555555&icon=iconify.svg&icon_color=%23E7E7E7&title=Bros&edge_flat=false)](https://hits.seeyoufarm.com)[![Homepage](https://img.shields.io/badge/homepage-visit-blue)](https://deepdataspace.com/blog/dino-xseek) [![Static Badge](https://img.shields.io/badge/Try_Demo!-blue?logo=chainguard&logoColor=green)](https://cloud.deepdataspace.com/playground/dino-x)
 
 </div>
 
@@ -21,636 +22,357 @@
   - [2.1 Download Pre-trained Models](#21-download-pre-trained-models)
   - [2.2 Verify Installation](#22-verify-installation)
 - [3. Usage 🚀](#3-usage-)
-  - [3.1 Use UPN for Object Proposal Generation](#31-use-upn-for-object-proposal-generation)
-  - [3.2 Usage of ChatRex](#32-usage-of-chatrex)
-    - [3.2.1 ChatRex for Object Detection \& Grounding \& Referring](#321-chatrex-for-object-detection--grounding--referring)
-    - [3.2.2 ChatRex for Region Caption](#322-chatrex-for-region-caption)
-    - [3.2.3 ChatRex for Grounded Image Captioning](#323-chatrex-for-grounded-image-captioning)
-    - [3.2.4 ChatRex for Grounded Conversation](#324-chatrex-for-grounded-conversation)
+  - [3.1 Model Architecture](#31-model-architecture)
+  - [3.1 Combine RexSeek with GroundingDINO](#31-combine-rexseek-with-groundingdino)
+    - [3.1.1 Install GroundingDINO](#311-install-groundingdino)
+    - [3.1.2 Run the Demo](#312-run-the-demo)
+  - [3.2 Combine RexSeek with GroundingDINO and Spacy](#32-combine-rexseek-with-groundingdino-and-spacy)
+    - [3.2.1 Install Dependencies](#321-install-dependencies)
+    - [3.2.2 Run the Demo](#322-run-the-demo)
+  - [3.3 Combine RexSeek with GroundingDINO, Spacy and SAM](#33-combine-rexseek-with-groundingdino-spacy-and-sam)
+    - [3.3.1 Install Dependencies](#331-install-dependencies)
+    - [3.3.2 Run the Demo](#332-run-the-demo)
 - [4. Gradio Demos 🎨](#4-gradio-demos-)
-  - [4.1 Gradio Demo for UPN](#41-gradio-demo-for-upn)
-  - [4.2 Gradio Demo for ChatRex](#42-gradio-demo-for-chatrex)
-- [5. RexVerse-2M Dataset](#5-rexverse-2m-dataset)
-- [6. LICENSE](#5-license)
+  - [4.1 Gradio Demo for RexSeek + GroundingDINO + SAM](#41-gradio-demo-for-rexseek--groundingdino--sam)
+- [5. HumanRef Benchmark](#5-humanref-benchmark)
+  - [5.1 Download](#51-download)
+  - [5.2 Visualization](#52-visualization)
+    - [3.1 Visualization](#31-visualization)
+    - [3.2 Evaluation](#32-evaluation)
+      - [3.2.1 Metrics](#321-metrics)
+      - [3.2.2 Evaluation Script](#322-evaluation-script)
+- [6. LICENSE](#6-license)
 - [BibTeX 📚](#bibtex-)
 
 ----
 
-# News
-- 2025-1-23: RexVerse-2M dataset is now available at [https://huggingface.co/datasets/IDEA-Research/Rexverse-2M](https://huggingface.co/datasets/IDEA-Research/Rexverse-2M)
-
 # 1. Introduction 📚
-**TL;DR: ChatRex is an MLLM skilled in perception that can respond to questions while simultaneously grounding its answers to the referenced objects.**
+RexSeek is a Multimodal Large Language Model (MLLM) designed to detect people or objects in images based on natural language descriptions. Unlike traditional referring models that focus on single-instance detection, RexSeek excels at multi-instance referring tasks - identifying multiple people or objects that match a given description.
+
+### Key Features
+- **Multi-Instance Detection**: Can identify multiple matching instances in a single image
+- **Robust Perception**: Powered by state-of-the-art person detection models
+- **Strong Language Understanding**: Leverages advanced LLM capabilities for complex description comprehension
+
+### The HumanRef Benchmark
+We aslo introduce HumanRef Benchmark, a comprehensive benchmark for human-centric referring tasks containing:
+- 6000 referring expressions
+- Average of 2.2 instances per expression
+- Covers 6 key aspects of human referring:
+  - Attributes (gender, age, clothing, etc.)
+  - Position (spatial relationships)
+  - Interaction (human-to-human, human-to-object)
+  - Reasoning (multi-step inference)
+  - Celebrity Recognition
+  - Rejection (hallucination detection)
 
 <!-- Add a video here -->
 [![Video Name](assets/teaser_cover.jpg)](https://github.com/user-attachments/assets/03d7e0af-1808-4ce8-bc67-854cf40a4972)
-
-ChatRex is a Multimodal Large Language Model (MLLM) designed to seamlessly integrate fine-grained object perception and robust language understanding. By adopting a decoupled architecture with a retrieval-based approach for object detection and leveraging high-resolution visual inputs, ChatRex addresses key challenges in perception tasks. It is powered by the Rexverse-2M dataset with diverse image-region-text annotations. ChatRex can be applied to various scenarios requiring fine-grained perception, such as object detection, grounded conversation, grounded image captioning and region
-understanding.
-
-<div align=center>
-  <img src="assets/capability_overview.jpg" width=800 >
-</div>
 
 ----
 
 # 2. Installation 🛠️
 ```bash
-conda install -n chatrex python=3.9
+conda install -n rexseek python=3.9
 pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu121
-pip install -v -e .
-# install deformable attention for universal proposal network
-cd chatrex/upn/ops
 pip install -v -e .
 ```
 
 ## 2.1 Download Pre-trained Models
-We provide model checkpoints for both the ***Universal Proposal Network (UPN)*** and the ***ChatRex model***. You can download the pre-trained models from the following links:
-- [UPN Checkpoint](https://github.com/IDEA-Research/ChatRex/releases/download/upn-large/upn_large.pth)
-- [ChatRex-7B Checkpoint](https://huggingface.co/IDEA-Research/ChatRex-7B)
+We provide model checkpoints for ***RexSeek-3B***. You can download the pre-trained models from the following links:
+- [ChatRex-3B Checkpoint](https://huggingface.co/IDEA-Research/RexSeek-3B)
 
 Or you can also using the following command to download the pre-trained models:
 ```bash
-mkdir checkpoints
-mkdir checkpoints/upn
-# download UPN checkpoint
-wget -O checkpoints/upn/upn_large.pth https://github.com/IDEA-Research/ChatRex/releases/download/upn-large/upn_large.pth
 # Download ChatRex checkpoint from Hugging Face
 git lfs install
-git clone https://huggingface.co/IDEA-Research/ChatRex-7B checkpoints/chatrex
+git clone https://huggingface.co/IDEA-Research/RexSeek-3B IDEA-Research/RexSeek-3B
 ```
 
 ## 2.2 Verify Installation
-To verify the ***installation of the Universal Proposal Network (UPN)***, run the following command:
+To verify the installation, run the following command:
 ```bash
-python tests/test_upn_install.py
+python tests/test_local_load.py
 ```
 
-If the installation is successful, you will get two visualization images of both fine-grained proposal and coarse-grained proposal in `tests` folder.
-
-To verify the ***installation of the ChatRex model***, run the following command:
-```bash
-python tests/test_chatrex_install.py
-```
-
-If the installation is successful, you will get an output like this:
-```text
-prediction: <obj0> shows a brown dog lying on a bed. The dog is resting comfortably, possibly sleeping, and is positioned on the left side of the bed
-```
+If the installation is successful, you will get a visualization image in `tests/images` folder.
 
 # 3. Usage 🚀
-## 3.1 Use UPN for Object Proposal Generation
-
-Universal Proposal Network (UPN) is a robust object proposal model designed as part of ChatRex to enable comprehensive and accurate object detection across diverse granularities and domains. Built upon T-Rex2, UPN is a DETR-based model with a dual-granularity prompt tuning strategy, combining fine-grained (e.g., part-level) and coarse-grained (e.g., instance-level) detection.
-
+## 3.1 Model Architecture
 <div align=center>
-  <img src="assets/upn_res.jpg" width=600 >
+  <img src="assets/model_arch.jpg" width=600 >
 </div>
 
-----
+**TL;DR**: ***RexSeek needs model to propose object boxes first, then use the LLM to detect the objects.***
 
-<details close>
-<summary><strong>Example Code for UPN</strong></summary>
+RexSeek consists of three key components:
+1. **Vision Encoders**: Dual-resolution feature extraction (CLIP + ConvNeXt)
+2. **Person Detector**: DINO-X for generating high-quality object proposals
+3. **Language Model**: Qwen2.5 for understanding complex referring expressions
 
-```python
-import torch
-from PIL import Image
-from tools.visualize import plot_boxes_to_image
-from chatrex.upn import UPNWrapper
+- **Inputs**:
+  - Image: The source image containing people/objects
+  - Text: Natural language description of target objects
+  - Boxes: Object proposals from DINO-X detector (can be replaced with custom boxes)
 
-ckpt_path = "checkpoints/upn_checkpoints/upn_large.pth"
-test_image_path = "tests/images/test_upn.jpeg"
+- **Outputs**:
+  - Object indices corresponding to the referring expression in format:
+    ```
+    <ground>referring text</ground><objects><obj1><obj2>...</objects>
+    ```
 
-model = UPNWrapper(ckpt_path)
-# fine-grained prompt
-fine_grained_proposals = model.inference(
-    test_image_path, prompt_type="fine_grained_prompt"
-)
-# filter by score (default: 0.3) and nms (default: 0.8)
-fine_grained_filtered_proposals = model.filter(
-    fine_grained_proposals, min_score=0.3, nms_value=0.8
-)
-## output is a dict with keys: "original_xyxy_boxes", "scores"
-## - "original_xyxy_boxes": list of boxes in xyxy format in shape (B, N, 4)
-## - "scores": list of scores for each box in shape (B, N)
+## 3.1 Combine RexSeek with GroundingDINO 
+In this example, we will use GroundingDINO to generate object proposals, and then use RexSeek to detect the objects.
 
-# coarse-grained prompt
-coarse_grained_proposals = model.inference(
-    test_image_path, prompt_type="coarse_grained_prompt"
-)
-coarse_grained_filtered_proposals = model.filter(
-    coarse_grained_proposals, min_score=0.3, nms_value=0.8
-)
-
-## output is a dict with keys: "original_xyxy_boxes", "scores"
-## - "original_xyxy_boxes": list of boxes in xyxy format in shape (B, N, 4)
-## - "scores": list of scores for each box in shape (B, N)
+### 3.1.1 Install GroundingDINO
+```bash
+cd demos/
+git clone https://github.com/IDEA-Research/GroundingDINO.git
+cd GroundingDINO
+pip install -v -e .
+mkdir weights
+wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth -P weights
+cd ../../../
 ```
 
-</details>
-
-We also provide a visualization tool to visualize the object proposals generated by UPN. You can use the following code to visualize the object proposals:
-
-<details close>
-<summary><strong>Example Code for UPN Visualization</strong></summary>
-
-```python
-
-from chatrex.tools.visualize import plot_boxes_to_image
-image = Image.open(test_image_path)
-fine_grained_vis_image, _ = plot_boxes_to_image(
-    image.copy(),
-    fine_grained_filtered_proposals["original_xyxy_boxes"][0],
-    fine_grained_filtered_proposals["scores"][0],
-)
-fine_grained_vis_image.save("tests/test_image_fine_grained.jpeg")
-print(f"fine-grained proposal is saved at tests/test_image_fine_grained.jpeg")
-
-coarse_grained_vis_image, _ = plot_boxes_to_image(
-    image.copy(),
-    coarse_grained_filtered_proposals["original_xyxy_boxes"][0],
-    coarse_grained_filtered_proposals["scores"][0],
-)
-coarse_grained_vis_image.save("tests/test_image_coarse_grained.jpeg")
-print(f"coarse-grained proposal is saved at tests/test_image_coarse_grained.jpeg")
-
-```
-</details>
-
-## 3.2 Usage of ChatRex
-
-ChatRex takes three inputs: image, text prompt, and box input. For the box input, you can either use the object proposals generated by UPN or provide your own box input (user drawn boxes). We have wrapped the ChatRex model to huggingface transformers format for easy usage. ChatRex can be used for various tasks and we provide example code for each task below.
-
-### 3.2.1 ChatRex for Object Detection & Grounding & Referring
-
-Example Prompt for detection, grounding, referring tasks:
-```text
-# Single Object Detection
-Please detect dog in this image. Answer the question with object indexes.
-Please detect the man in yellow shirt in this image. Answer the question with object indexes.
-
-# multiple object detection, use ; to separate the objects
-Please detect person; pigeon in this image. Answer the question with object indexes.
-Please detect person in the car; cat below the table in this image. Answer the question with object indexes.
+### 3.1.2 Run the Demo
+```bash
+python demos/rexseek_grounding_dino.py \
+    --image path/to/your/image.jpg \     # Input image path
+    --output path/to/output.jpg \        # Path to save visualization result
+    --referring "Please detect people wearing red shirts" \  # Natural language query
+    --objects "person" \                 # Objects to detect 
+    --text-threshold 0.25 \             # Confidence threshold for text matching
+    --box-threshold 0.25                # Confidence threshold for box detection
 ```
 
-<details close>
-<summary><strong>Example Code</strong></summary>
+## 3.2 Combine RexSeek with GroundingDINO and Spacy
+In previous example, we need to explicitly specify object categories (like "person") for GroundingDINO to detect. However, we can make this process more automatic by using Spacy to extract nouns from the question as detection targets.
 
-- [Example Code in python file](tests/test_chatrex_detection.py)
-
-```python
-import torch
-from PIL import Image
-from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig
-
-from chatrex.tools.visualize import visualize_chatrex_output
-from chatrex.upn import UPNWrapper
-
-if __name__ == "__main__":
-    # load the processor
-    processor = AutoProcessor.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        device_map="cuda",
-    )
-
-    print(f"loading chatrex model...")
-    # load chatrex model
-    model = AutoModelForCausalLM.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        use_safetensors=True,
-    ).to("cuda")
-
-    # load upn model
-    print(f"loading upn model...")
-    ckpt_path = "checkpoints/upn_checkpoints/upn_large.pth"
-    model_upn = UPNWrapper(ckpt_path)
-    test_image_path = "tests/images/test_chatrex_detection.jpg"
-
-    # get upn predictions
-    fine_grained_proposals = model_upn.inference(
-        test_image_path, prompt_type="fine_grained_prompt"
-    )
-    fine_grained_filtered_proposals = model_upn.filter(
-        fine_grained_proposals, min_score=0.3, nms_value=0.8
-    )
-
-    inputs = processor.process(
-        image=Image.open(test_image_path),
-        question="Please detect person; pigeon in this image. Answer the question with object indexes.",
-        bbox=fine_grained_filtered_proposals["original_xyxy_boxes"][
-            0
-        ],  # box in xyxy format
-    )
-
-    inputs = {k: v.to("cuda") for k, v in inputs.items()}
-
-    # perform inference
-    gen_config = GenerationConfig(
-        max_new_tokens=512,
-        do_sample=False,
-        eos_token_id=processor.tokenizer.eos_token_id,
-        pad_token_id=(
-            processor.tokenizer.pad_token_id
-            if processor.tokenizer.pad_token_id is not None
-            else processor.tokenizer.eos_token_id
-        ),
-    )
-    with torch.autocast(device_type="cuda", enabled=True, dtype=torch.bfloat16):
-        prediction = model.generate(
-            inputs, gen_config=gen_config, tokenizer=processor.tokenizer
-        )
-    print(f"prediction:", prediction)
-
-    # visualize the prediction
-    vis_image = visualize_chatrex_output(
-        Image.open(test_image_path),
-        fine_grained_filtered_proposals["original_xyxy_boxes"][0],
-        prediction,
-        font_size=15,
-        draw_width=5,
-    )
-    vis_image.save("tests/test_chatrex_detection.jpeg")
-    print(f"prediction is saved at tests/test_chatrex_detection.jpeg")
+### 3.2.1 Install Dependencies
+```bash
+pip install spacy
+python -m spacy download en_core_web_sm
 ```
 
-The output from LLM is like:
-```text
-<ground>person</ground><objects><obj10><obj14><obj15><obj27><obj28><obj32><obj33><obj35><obj38><obj47><obj50></objects>
-<ground>pigeon</ground><objects><obj0><obj1><obj2><obj3><obj4><obj5><obj6><obj7><obj8><obj9><obj11><obj12><obj13><obj16><obj17><obj18><obj19><obj20><obj21><obj22><obj23><obj24><obj25><obj26><obj29><obj31><obj37><obj39><obj40><obj41><obj44><obj49></objects>
+### 3.2.2 Run the Demo
+```bash
+python demos/rexseek_grounding_dino_spacy.py \
+    --image path/to/your/image.jpg \     # Input image path
+    --output path/to/output.jpg \        # Path to save visualization result
+    --referring "Please detect people wearing red shirts and dogs playing in the park" \  # Natural language query
+    --text-threshold 0.25 \             # Confidence threshold for text matching
+    --box-threshold 0.25                # Confidence threshold for box detection
 ```
 
-The visualization of the output is like:
+In this enhanced version:
+- No need to specify `--objects` parameter
+- Spacy automatically extracts nouns ("people", "shirts", "dogs", "park") from the question
+- GroundingDINO uses these extracted nouns as detection targets
+- More flexible and natural interaction through questions
 
-<div align=center>
-  <img src="assets/vis_output/test_chatrex_detection.jpeg" width=600 >
-</div>
 
-</details>
+## 3.3 Combine RexSeek with GroundingDINO, Spacy and SAM
+In this example, we will use GroundingDINO to generate object proposals, then use Spacy to extract nouns from the question as detection targets, and finally use SAM to segment the objects.
 
-----
-
-### 3.2.2 ChatRex for Region Caption
-Example Prompt for Region Caption tasks:
-
-```text
-# Single Object Detection
-## caption in category name
-What is the category name of <obji>? Answer the question with its category name in free format.
-
-## caption in short phrase
-Can you provide me with a short phrase to describe <obji>? Answer the question with a short phrase.
-
-## caption in referring style
-Can you provide me with a brief description of <obji>? Answer the question with brief description.
-
-## caption in one sentence
-Can you provide me with a one sentence of <obji>? Answer the question with one sentence description.
-
-# multiple object detection, use ; to separate the objects
+### 3.3.1 Install Dependencies
+```bash
+cd demos/
+git clone https://github.com/IDEA-Research/SAM.git  
+cd SAM
+pip install -v -e .
+mkdir weights
+wget -q https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth -P weights
+cd ../../../
 ```
 
-<details close>
-<summary><strong>Example Code</strong></summary>
-
-- [Example Code in python file](tests/test_chatrex_region_caption.py)
-
-```python
-import torch
-from PIL import Image
-from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig
-
-from chatrex.tools.visualize import visualize_chatrex_output
-from chatrex.upn import UPNWrapper
-
-if __name__ == "__main__":
-    # load the processor
-    processor = AutoProcessor.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        device_map="cuda",
-    )
-
-    print(f"loading chatrex model...")
-    # load chatrex model
-    model = AutoModelForCausalLM.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        use_safetensors=True,
-    ).to("cuda")
-
-    test_image_path = "tests/images/test_chatrex_install.jpg"
-
-    inputs = processor.process(
-        image=Image.open(test_image_path),
-        question="Can you provide a one sentence description of <obj0> in the image? Answer the question with a one sentence description.",
-        bbox=[[73.88417, 56.62228, 227.69223, 216.34338]],
-    )
-
-    inputs = {k: v.to("cuda") for k, v in inputs.items()}
-
-    # perform inference
-    gen_config = GenerationConfig(
-        max_new_tokens=512,
-        do_sample=False,
-        eos_token_id=processor.tokenizer.eos_token_id,
-        pad_token_id=(
-            processor.tokenizer.pad_token_id
-            if processor.tokenizer.pad_token_id is not None
-            else processor.tokenizer.eos_token_id
-        ),
-    )
-    with torch.autocast(device_type="cuda", enabled=True, dtype=torch.bfloat16):
-        prediction = model.generate(
-            inputs, gen_config=gen_config, tokenizer=processor.tokenizer
-        )
-    print(f"prediction:", prediction)
-
-    # visualize the prediction
-    vis_image = visualize_chatrex_output(
-        Image.open(test_image_path),
-        [[73.88417, 56.62228, 227.69223, 216.34338]],
-        prediction,
-        font_size=15,
-        draw_width=5,
-    )
-    vis_image.save("tests/test_chatrex_region_caption.jpeg")
-    print(f"prediction is saved at tests/test_chatrex_region_caption.jpeg")
+### 3.3.2 Run the Demo
+```bash
+python demos/rexseek_grounding_dino_spacy_sam.py \
+    --image path/to/your/image.jpg \     # Input image path
+    --output path/to/output.jpg \        # Path to save visualization result
+    --referring "Please detect people wearing red shirts and dogs playing in the park" \  # Natural language query
+    --text-threshold 0.25 \             # Confidence threshold for text matching
+    --box-threshold 0.25                # Confidence threshold for box detection
 ```
-
-The output from LLM is like:
-```text
-<ground>A brown dog is lying on a bed, appearing relaxed and comfortable</ground><objects><obj0></objects>
-```
-
-The visualization of the output is like:
-
-<div align=center>
-  <img src="assets/vis_output/test_chatrex_region_caption.jpeg" width=600 >
-</div>
-
-</details>
-
-----
-
-### 3.2.3 ChatRex for Grounded Image Captioning
-Example Prompt for Region Caption tasks:
-
-```text
-# Brief Grounded Imager Caption
-Please breifly describe this image in one sentence and detect all the mentioned objects. Answer the question with grounded answer.
-
-# Detailed Grounded Image Caption
-Please provide a detailed description of the image and detect all the mentioned objects. Answer the question with grounded object indexes.
-```
-
-<details close>
-<summary><strong>Example Code</strong></summary>
-
-- [Example Code in python file](tests/test_chatrex_grounded_image_caption.py)
-
-```python
-import torch
-from PIL import Image
-from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig
-
-from chatrex.tools.visualize import visualize_chatrex_output
-from chatrex.upn import UPNWrapper
-
-if __name__ == "__main__":
-    # load the processor
-    processor = AutoProcessor.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        device_map="cuda",
-    )
-
-    print(f"loading chatrex model...")
-    # load chatrex model
-    model = AutoModelForCausalLM.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        use_safetensors=True,
-    ).to("cuda")
-
-    # load upn model
-    print(f"loading upn model...")
-    ckpt_path = "checkpoints/upn_checkpoints/upn_large.pth"
-    model_upn = UPNWrapper(ckpt_path)
-    test_image_path = "tests/images/test_chatrex_grounded_caption.jpg"
-
-    # get upn predictions
-    fine_grained_proposals = model_upn.inference(
-        test_image_path, prompt_type="fine_grained_prompt"
-    )
-    fine_grained_filtered_proposals = model_upn.filter(
-        fine_grained_proposals, min_score=0.3, nms_value=0.8
-    )
-
-    inputs = processor.process(
-        image=Image.open(test_image_path),
-        question="Please breifly describe this image in one sentence and detect all the mentioned objects. Answer the question with grounded answer.",
-        bbox=fine_grained_filtered_proposals["original_xyxy_boxes"][
-            0
-        ],  # box in xyxy format
-    )
-
-    inputs = {k: v.to("cuda") for k, v in inputs.items()}
-
-    # perform inference
-    gen_config = GenerationConfig(
-        max_new_tokens=512,
-        do_sample=False,
-        eos_token_id=processor.tokenizer.eos_token_id,
-        pad_token_id=(
-            processor.tokenizer.pad_token_id
-            if processor.tokenizer.pad_token_id is not None
-            else processor.tokenizer.eos_token_id
-        ),
-    )
-    with torch.autocast(device_type="cuda", enabled=True, dtype=torch.bfloat16):
-        prediction = model.generate(
-            inputs, gen_config=gen_config, tokenizer=processor.tokenizer
-        )
-    print(f"prediction:", prediction)
-
-    # visualize the prediction
-    vis_image = visualize_chatrex_output(
-        Image.open(test_image_path),
-        fine_grained_filtered_proposals["original_xyxy_boxes"][0],
-        prediction,
-        font_size=15,
-        draw_width=5,
-    )
-    vis_image.save("tests/test_chatrex_grounded_image_caption.jpeg")
-    print(f"prediction is saved at tests/test_chatrex_grounded_image_caption.jpeg")
-```
-
-The output from LLM is like:
-```text
-The image depicts a cozy living room with a <ground>plaid couch,</ground><objects><obj2></objects> a <ground>wooden TV stand</ground><objects><obj3></objects>holding a <ground>black television,</ground><objects><obj1></objects> a <ground>red armchair,</ground><objects><obj4></objects> and a <ground>whiteboard</ground><objects><obj0></objects>with writing on the wall, accompanied by a <ground>framed poster</ground><objects><obj6></objects>of a <ground>couple.</ground><objects><obj9><obj11></objects>
-```
-
-The visualization of the output is like:
-
-<div align=center>
-  <img src="assets/vis_output/test_chatrex_grounded_image_caption.jpeg" width=600 >
-</div>
-
-</details>
-
-----
-
-### 3.2.4 ChatRex for Grounded Conversation
-Example Prompt for Region Caption tasks:
-
-```text
-Answer the question in Grounded format. Question
-```
-
-<details close>
-<summary><strong>Example Code</strong></summary>
-
-- [Example Code in python file](tests/test_chatrex_grounded_conversation.py)
-
-```python
-import torch
-from PIL import Image
-from transformers import AutoModelForCausalLM, AutoProcessor, GenerationConfig
-
-from chatrex.tools.visualize import visualize_chatrex_output
-from chatrex.upn import UPNWrapper
-
-if __name__ == "__main__":
-    # load the processor
-    processor = AutoProcessor.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        device_map="cuda",
-    )
-
-    print(f"loading chatrex model...")
-    # load chatrex model
-    model = AutoModelForCausalLM.from_pretrained(
-        "IDEA-Research/ChatRex-7B",
-        trust_remote_code=True,
-        use_safetensors=True,
-    ).to("cuda")
-
-    # load upn model
-    print(f"loading upn model...")
-    ckpt_path = "checkpoints/upn_checkpoints/upn_large.pth"
-    model_upn = UPNWrapper(ckpt_path)
-    test_image_path = "tests/images/test_grounded_conversation.jpg"
-
-    # get upn predictions
-    fine_grained_proposals = model_upn.inference(
-        test_image_path, prompt_type="coarse_grained_prompt"
-    )
-    fine_grained_filtered_proposals = model_upn.filter(
-        fine_grained_proposals, min_score=0.3, nms_value=0.8
-    )
-
-    inputs = processor.process(
-        image=Image.open(test_image_path),
-        question="Answer the question in grounded format. This is a photo of my room, and can you tell me what kind of person I am?  ",
-        bbox=fine_grained_filtered_proposals["original_xyxy_boxes"][
-            0
-        ],  # box in xyxy format
-    )
-
-    inputs = {k: v.to("cuda") for k, v in inputs.items()}
-
-    # perform inference
-    gen_config = GenerationConfig(
-        max_new_tokens=512,
-        do_sample=False,
-        eos_token_id=processor.tokenizer.eos_token_id,
-        pad_token_id=(
-            processor.tokenizer.pad_token_id
-            if processor.tokenizer.pad_token_id is not None
-            else processor.tokenizer.eos_token_id
-        ),
-    )
-    with torch.autocast(device_type="cuda", enabled=True, dtype=torch.bfloat16):
-        prediction = model.generate(
-            inputs, gen_config=gen_config, tokenizer=processor.tokenizer
-        )
-    print(f"prediction:", prediction)
-
-    # visualize the prediction
-    vis_image = visualize_chatrex_output(
-        Image.open(test_image_path),
-        fine_grained_filtered_proposals["original_xyxy_boxes"][0],
-        prediction,
-        font_size=30,
-        draw_width=10,
-    )
-    vis_image.save("tests/test_chatrex_grounded_conversation.jpeg")
-    print(f"prediction is saved at tests/test_chatrex_grounded_conversation.jpeg")
-
-```
-
-The output from LLM is like:
-```text
-Based on the items in the image, it can be inferred that the <ground>person</ground><objects><obj1></objects> who owns this room has an interest in fitness and possibly enjoys reading. The presence of the <ground>dumbbell</ground><objects><obj2></objects> suggests a commitment to physical activity, while the <ground>book</ground><objects><obj3></objects> indicates a liking for literature or reading. The <ground>sneaker</ground><objects><obj0></objects>s and the <ground>plush toy</ground><objects><obj1></objects> add a personal touch, suggesting that the <ground>person</ground><objects><obj1></objects> might also value comfort and perhaps has a playful or nostalgic side. However, without more context, it is not possible to accurately determine the individual's specific traits or <ground>person</ground><objects><obj1></objects>ality.
-```
-
-The visualization of the output is like:
-
-<div align=center>
-  <img src="assets/test_chatrex_grounded_conversation.jpeg" width=600 >
-</div>
-
-</details>
-
-----
 
 # 4. Gradio Demos 🎨
 Here are [Workflow Readme](gradio_demos/gradio.md) you can follow to run the gradio demos.
 
-## 4.1 Gradio Demo for UPN
-We provide a gradio demo for UPN to visualize the object proposals generated by UPN. You can run the following command to start the gradio demo:
+## 4.1 Gradio Demo for RexSeek + GroundingDINO + SAM
+We provide a gradio demo for RexSeek + GroundingDINO + SAM. You can run the following command to start the gradio demo:
 ```bash
-python gradio_demos/upn_demo.py
-# if there is permission error, please run the following command
-mkdir tmp
-TMPDIR='/tmp' python gradio_demos/upn_demo.py
+python demos/gradio_demo.py \
+    --rexseek-path "IDEA-Research/RexSeek-3B" \
+    --gdino-config "demos/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py" \
+    --gdino-weights "demos/GroundingDINO/weights/groundingdino_swint_ogc.pth" \
+    --sam-weights "demos/segment-anything/weights/sam_vit_h_4b8939.pth"
 ```
 
 <div align=center>
-  <img src="assets/upn_gradio.jpg" width=600 >
+  <img src="assets/gradio.jpg" width=600 >
 </div>
 
-
-## 4.2 Gradio Demo for ChatRex
-We also provide a gradio demo for ChatRex. Before you use, we highly recommend you to watch the following video to understand how to use this demo:
-
-<!-- Add a video here -->
-[![Video Name](assets/video_cover.jpg)](https://github.com/user-attachments/assets/945e192f-59e3-4c84-8615-20343378279a)
-
-```bash
-python gradio_demos/chatrex_demo.py
-# if there is permission error, please run the following command
-mkdir tmp
-TMPDIR='/tmp' python gradio_demos/upn_demo.py
-```
+# 5. HumanRef Benchmark
 
 <div align=center>
-  <img src="assets/chatrex_gradio.jpg" width=600 >
+  <img src="assets/humanref.jpg" width=600 >
 </div>
 
-# RexVerse-2M Dataset
-- We have released 500K data samples of RexVerse-2M dataset. You can download the dataset from [Hugging Face](https://huggingface.co/datasets/IDEA-Research/Rexverse-2M)
+HumanRef is a large-scale human-centric referring expression dataset designed for multi-instance human referring in natural scenes. Unlike traditional referring datasets that focus on one-to-one object referring, HumanRef supports referring to multiple individuals simultaneously through natural language descriptions.
 
+Key features of HumanRef include:
+
+- **Multi-Instance Referring**: A single referring expression can correspond to multiple individuals, better reflecting real-world scenarios
+- **Diverse Referring Types**: Covers 6 major types of referring expressions:
+  - Attribute-based (e.g., gender, age, clothing)
+  - Position-based (relative positions between humans or with environment)
+  - Interaction-based (human-human or human-environment interactions)
+  - Reasoning-based (complex logical combinations)
+  - Celebrity Recognition
+  - Rejection Cases (non-existent references)
+- **High-Quality Data**:
+  - 34,806 high-resolution images (>1000×1000 pixels)
+  - 103,028 referring expressions in training set
+  - 6,000 carefully curated expressions in benchmark set
+  - Average 8.6 persons per image
+  - Average 2.2 target boxes per referring expression
+
+The dataset aims to advance research in human-centric visual understanding and referring expression comprehension in complex, multi-person scenarios.
+
+## 5.1 Download
+You can download the HumanRef Benchmark at [https://huggingface.co/datasets/IDEA-Research/HumanRef](https://huggingface.co/datasets/IDEA-Research/HumanRef).
+
+## 5.2 Visualization
+
+## 3.1 Visualization
+HumanRef Benchmark contains 6 domains, each domain may have multiple sub-domains.
+
+| Domain | Subdomain | Num Referrings |
+|--------|-----------|--------|
+| attribute | 1000_attribute_retranslated_with_mask | 1000 |
+| position | 500_inner_position_data_with_mask | 500 |
+| position | 500_outer_position_data_with_mask | 500 |
+| celebrity | 1000_celebrity_data_with_mask | 1000 |
+| interaction | 500_inner_interaction_data_with_mask | 500 |
+| interaction | 500_outer_interaction_data_with_mask | 500 |
+| reasoning | 229_outer_position_two_stage_with_mask | 229 |
+| reasoning | 271_positive_then_negative_reasoning_with_mask | 271 |
+| reasoning | 500_inner_position_two_stage_with_mask | 500 |
+| rejection | 1000_rejection_referring_with_mask | 1000 |
+
+To visualize the dataset, you can run the following command:
+
+```bash
+python rexseek/tools/visualize_humanref.py \
+    --anno_path "IDEA-Research/HumanRef/annotations.jsonl" \
+    --image_root_dir "IDEA-Research/HumanRef/images" \
+    --domain_anme "attribute" \ # attribute, position, interaction, reasoning, celebrity, rejection
+    --sub_domain_anme "1000_attribute_retranslated_with_mask" \ # 1000_attribute_retranslated_with_mask, 500_inner_position_data_with_mask, 500_outer_position_data_with_mask, 1000_celebrity_data_with_mask, 500_inner_interaction_data_with_mask, 500_outer_interaction_data_with_mask, 229_outer_position_two_stage_with_mask, 271_positive_then_negative_reasoning_with_mask, 500_inner_position_two_stage_with_mask, 1000_rejection_referring_with_mask
+    --vis_path "IDEA-Research/HumanRef/visualize" \
+    --num_images 50 \
+    --vis_mask True # True, False
+```
+
+## 3.2 Evaluation
+### 3.2.1 Metrics
+
+We evaluate the referring task using three main metrics: Precision, Recall, and DensityF1 Score.
+
+#### Basic Metrics
+- **Precision & Recall**: For each referring expression, a predicted bounding box is considered correct if its IoU with any ground truth box exceeds a threshold. Following COCO evaluation protocol, we report average performance across IoU thresholds from 0.5 to 0.95 in steps of 0.05.
+
+- **Point-based Evaluation**: For models that only output points (e.g., Molmo), a prediction is considered correct if the predicted point falls within the mask of the corresponding instance. Note that this is less strict than IoU-based metrics.
+
+- **Rejection Accuracy**: For the rejection subset, we calculate:
+  ```
+  Rejection Accuracy = Number of correctly rejected expressions / Total number of expressions
+  ```
+  where a correct rejection means the model predicts no boxes for a non-existent reference.
+
+#### DensityF1 Score
+To penalize over-detection (predicting too many boxes), we introduce the DensityF1 Score:
+
+```
+DensityF1 = (1/N) * Σ [2 * (Precision_i * Recall_i)/(Precision_i + Recall_i) * D_i]
+```
+
+where D_i is the density penalty factor:
+
+```
+D_i = min(1.0, GT_Count_i / Predicted_Count_i)
+```
+
+where:
+- N is the number of referring expressions
+- GT_Count_i is the total number of persons in image i
+- Predicted_Count_i is the number of predicted boxes for referring expression i
+
+This penalty factor reduces the score when models predict significantly more boxes than the actual number of people in the image, discouraging over-detection strategies.
+
+### 3.2.2 Evaluation Script
+#### Prediction Format
+Before running the evaluation, you need to prepare your model's predictions in the correct format. Each prediction should be a JSON line in a JSONL file with the following structure:
+
+```json
+{
+  "id": "image_id",
+  "extracted_predictions": [[x1, y1, x2, y2], [x1, y1, x2, y2], ...]
+}
+```
+
+Where:
+- id: The image identifier matching the ground truth data
+- extracted_predictions: A list of bounding boxes in [x1, y1, x2, y2] format or points in [x, y] format
+
+For rejection cases (where no humans should be detected), you should either:
+- Include an empty list: "extracted_predictions": []
+- Include a list with an empty box: "extracted_predictions": [[]]
+
+#### Running the Evaluation
+You can run the evaluation script using the following command:
+```bash
+python rexseek/metric/recall_precision_densityf1.py \
+  --gt_path IDEA-Research/HumanRef/annotations.jsonl \
+  --pred_path path/to/your/predictions.jsonl \
+  --pred_names "Your Model Name" \
+  --dump_path IDEA-Research/HumanRef/evaluation_results/your_model_results
+```
+
+Parameters:
+- --gt_path: Path to the ground truth annotations file
+- --pred_path: Path to your prediction file(s). You can provide multiple paths to compare different models
+- --pred_names: Names for your models (for display in the results)
+- --dump_path: Directory to save the evaluation results in markdown and JSON formats
+
+Evaluating Multiple Models:
+
+To compare multiple models, provide multiple prediction files:
+
+```bash
+python rexseek/metric/recall_precision_densityf1.py \
+  --gt_path IDEA-Research/HumanRef/annotations.jsonl \
+  --pred_path model1_results.jsonl model2_results.jsonl model3_results.jsonl \
+  --pred_names "Model 1" "Model 2" "Model 3" \
+  --dump_path IDEA-Research/HumanRef/evaluation_results/comparison
+```
+
+#### Programmatic Usage
+```python
+from rexseek.metric.recall_precision_densityf1 import recall_precision_densityf1
+
+recall_precision_densityf1(
+    gt_path="IDEA-Research/HumanRef/annotations.jsonl",
+    pred_path=["path/to/your/predictions.jsonl"],
+    dump_path="IDEA-Research/HumanRef/evaluation_results/your_model_results"
+)
+```
 
 # 6. LICENSE
 
 ChatRex is licensed under the IDEA License 1.0, Copyright (c) IDEA. All Rights Reserved. Note that this project utilizes certain datasets and checkpoints that are subject to their respective original licenses. Users must comply with all terms and conditions of these original licenses including but not limited to the:
 - [OpenAI Terms of Use](https://openai.com/policies/terms-of-use) for the dataset. 
-- For the LLM used in this project, the model is [lmsys/vicuna-7b-v1.5](https://huggingface.co/lmsys/vicuna-7b-v1.5/tree/main), which is licensed under [Llama 2 Community License Agreement](https://huggingface.co/lmsys/vicuna-7b-v1.5).
+- For the LLM used in this project, the model is [Qwen/Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct), which is licensed under [Qwen RESEARCH LICENSE AGREEMENT](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/blob/main/LICENSE).
 - For the high resolution vision encoder, we are using [laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg](https://huggingface.co/laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg) which is licensed under [MIT LICENSE](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/mit.md).
 - For the low resolution vision encoder, we are using [openai/clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) which is licensed under [MIT LICENSE](https://github.com/openai/CLIP/blob/main/LICENSE)
 # BibTeX 📚

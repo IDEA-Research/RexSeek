@@ -2,7 +2,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from setuptools import find_packages, setup
 
-
 version_file = "rexseek/version.py"
 
 
@@ -108,6 +107,7 @@ if __name__ == "__main__":
         ],
         # Python maximum version <3.11, to support mpi4py-mpich
         python_requires=">=3.8, <3.11",
+        install_requires=parse_requirements(),
         license="IDEA License 1.0",
         zip_safe=False,
     )

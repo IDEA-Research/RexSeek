@@ -659,15 +659,14 @@ def print_comparative_metrics(all_metrics, gt_data, dump_path=None):
     if dump_path:
         dump_tables(domain_rows, box_rows, headers, box_headers, dump_path)
 
+
 def recall_precision_densityf1(gt_path, pred_path, dump_path=None):
     # Load ground truth data
     gt_data = [json.loads(line) for line in open(gt_path, "r")]
 
     # Process prediction files
     all_metrics = {}
-    pred_names = (
-        ["Model_1"]
-    )
+    pred_names = ["Model_1"]
 
     # Ensure we have matching names for all prediction files
     if len(pred_names) < len(pred_path):
@@ -685,12 +684,13 @@ def recall_precision_densityf1(gt_path, pred_path, dump_path=None):
         # Print results with all models in same tables and optionally dump to file
         print_comparative_metrics(all_metrics, gt_data, dump_path)
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--gt_path",
         type=str,
-        default="mounted_files/database/final_bencmark/ultimate_version/annotations_with_rejection.jsonl",
+        default="IDEA-Research/HumanRef/annotations.jsonl",
         help="Path to ground truth JSONL file",
     )
     parser.add_argument(
@@ -698,17 +698,43 @@ def main():
         type=str,
         nargs="+",
         help="Path(s) to prediction JSONL file(s)",
+        default=[
+            "IDEA-Research/HumanRef/evaluation_results/eval_deepseekvl2/deepseekvl2_small_results.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_ferret/ferret7b_results.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_groma/groma7b_results.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_internvl2/internvl2.5_8b_results.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_shikra/shikra7b_results.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_molmo/molmo-7b-d-0924_results.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_qwen2vl/qwen2.5-7B.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_chatrex/ChatRex-Vicuna7B.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_dinox/dinox_results.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_rexseek/rexseek_7b.jsonl",
+            "IDEA-Research/HumanRef/evaluation_results/eval_full_gt_person/results.jsonl",
+        ],
     )
     parser.add_argument(
         "--pred_names",
         type=str,
         nargs="+",
+        default=[
+            "DeepSeek-VL2-small",
+            "Ferret-7B",
+            "Groma-7B",
+            "InternVl-2.5-8B",
+            "Shikra-7B",
+            "Molmo-7B-D-0924",
+            "Qwen2.5-VL-7B",
+            "ChatRex-7B",
+            "DINOX",
+            "RexSeek-7B",
+            "Baseline",
+        ],
         help="Name(s) for prediction files (optional)",
     )
     parser.add_argument(
         "--dump_path",
         type=str,
-        default="database/final_bencmark/ultimate_version/evaluation",
+        default="IDEA-Research/HumanRef/evaluation_results/compare_different_models",
         help="Directory to dump markdown and JSON results (optional)",
     )
     args = parser.parse_args()

@@ -1,12 +1,16 @@
 import re
 
 import numpy as np
+import torch
+import torchvision.transforms.functional as F
 from PIL import Image
 
+from rexseek.utils import xywh_to_xyxy, xyxy_to_xywh
 from rexseek.utils.constants import (
     DEFAULT_IMAGE_TOKEN,
     DEFAULT_OBJECT_FEATURE_TOKEN,
     DEFAULT_OBJECT_INDEX,
+    DEFAULT_OBJECT_TOKEN,
     IMAGE_TOKEN_INDEX,
 )
 
@@ -120,3 +124,85 @@ def tokenizer_image_object_token(prompt, tokenizer):
         else:
             input_encode.extend(tokenizer.encode(chunk, add_special_tokens=False))
     return input_encode
+
+
+def modify_processor_resolution(image_processor, img_size_clip=336, image_size_aux=768):
+    if hasattr(image_processor, "crop_size"):
+        if img_size_clip is None:
+            crop_size_raw = image_processor.crop_size.copy()
+        else:
+            crop_size_raw = dict(height=img_size_clip, width=img_size_clip)
+        image_processor.crop_size["height"] = image_size_aux
+        image_processor.crop_size["width"] = image_size_aux
+        image_processor.size["shortest_edge"] = image_size_aux
+        is_clip = True
+    else:
+        if img_size_clip is None:
+            crop_size_raw = image_processor.crop_size.copy()
+        else:
+            crop_size_raw = dict(height=img_size_clip, width=img_size_clip)
+        image_processor.size["height"] = image_size_aux
+        image_processor.size["width"] = image_size_aux
+    return image_processor, crop_size_raw
+
+
+def prepare_input_for_rexseek(
+    image, image_processor, tokenizer, bbox, question: str, crop_size_raw, template
+):
+    """Prepare input data for inference.
+
+    Args:
+        image (Union[str, Image.Image]): The image to process.
+        bbox (List[List[int]]): A list of bounding boxes for the image. Each bounding box should
+            be in order of [x, y,  x, y].
+        question (str): The question to ask about the image.
+    """
+    data_dict = {}
+    # step1 load image
+    if type(image) == str:
+        image = Image.open(image).convert("RGB")
+    ori_w, ori_h = F.get_image_size(image)
+    image = expand2square(
+        image,
+        tuple(int(x * 255) for x in image_processor.image_mean),
+    )
+    pad_w, pad_h = F.get_image_size(image)
+    image_aux = image_processor.preprocess(image, return_tensors="pt")["pixel_values"][
+        0
+    ]
+    resize_h, resize_w = image_aux.shape[-2:]
+    data_dict["pixel_values_aux"] = image_aux.unsqueeze(0)
+    image = image_aux.clone()
+    image = torch.nn.functional.interpolate(
+        image[None],
+        size=[crop_size_raw["height"], crop_size_raw["width"]],
+        mode="bilinear",
+        align_corners=False,
+    )[0]
+    data_dict["pixel_values"] = image.unsqueeze(0)
+
+    # step2 load boxes
+    bbox = xyxy_to_xywh(bbox)
+    bbox = pad_boxes(bbox, (ori_w, ori_h))
+    bbox = resize_boxes(bbox, (pad_w, pad_h), (resize_h, resize_w))
+    data_dict["gt_boxes"] = torch.tensor(xywh_to_xyxy(bbox)).unsqueeze(0)
+
+    # step3 prepare question
+    total_num_boxes = len(bbox)
+    obj_tokens = [
+        DEFAULT_OBJECT_TOKEN.replace("<i>", str(i)) for i in range(total_num_boxes)
+    ]
+    obj_tokens = (
+        DEFAULT_OBJECT_FEATURE_TOKEN.join(obj_tokens) + DEFAULT_OBJECT_FEATURE_TOKEN
+    )
+    question = question.replace(DEFAULT_IMAGE_TOKEN, "")
+    question = DEFAULT_IMAGE_TOKEN + "\n" + obj_tokens + "\n" + question
+
+    inputs = ""
+    inputs += template["INSTRUCTION"].format(input=question, round=1)
+
+    # step4 tokenize question
+    input_ids = tokenizer_image_object_token(inputs, tokenizer)
+    data_dict["input_ids"] = torch.tensor(input_ids).unsqueeze(0)
+
+    return data_dict

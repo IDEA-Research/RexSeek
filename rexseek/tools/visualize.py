@@ -140,7 +140,9 @@ def convert_all_cate_prediction_to_ans(prediction: str) -> Dict[str, List[str]]:
     return ans
 
 
-def visualize(image, boxes, labels, font_size: int = 12, draw_width: int = 6):
+def visualize(
+    image, boxes, labels, font_size: int = 12, draw_width: int = 6, masks=None
+):
     image = image.copy()
     font_path = "rexseek/tools/Tahoma.ttf"
     font = ImageFont.truetype(font_path, font_size)
@@ -182,6 +184,30 @@ def visualize(image, boxes, labels, font_size: int = 12, draw_width: int = 6):
             font=font,
         )
 
+    if masks is not None:
+        h, w = image.size
+        rgba_image = image.convert("RGBA")
+        for mask in masks:
+            import random
+
+            mask_color = (
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255),
+            )
+
+            # Convert the tensor mask to a PIL image
+            mask_2d = mask.squeeze(0).astype(np.uint8) * 255
+            mask_pil = Image.fromarray(mask_2d).convert("L")
+            colored_mask = Image.new("RGBA", image.size)
+            draw = ImageDraw.Draw(colored_mask)
+            draw.bitmap(
+                (0, 0), mask_pil, fill=mask_color + (127,)
+            )  # Adding semi-transparency
+
+            # Composite the colored mask with the original image
+            rgba_image = Image.alpha_composite(rgba_image, colored_mask)
+        image = rgba_image.convert("RGB")
     return image
 
 
@@ -189,6 +215,7 @@ def visualize_rexseek_output(
     image_pil: Image,
     input_boxes: List[List[int]],
     prediction_text: str,
+    masks: np.ndarray = None,
     font_size=15,
     draw_width: int = 6,
 ) -> Image:
@@ -213,5 +240,7 @@ def visualize_rexseek_output(
             if obj_idx < len(input_boxes):
                 pred_labels.append(k)
                 pred_boxes.append(input_boxes[obj_idx])
-    image_pred = visualize(image_pil, pred_boxes, pred_labels, font_size, draw_width)
+    image_pred = visualize(
+        image_pil, pred_boxes, pred_labels, font_size, draw_width, masks=masks
+    )
     return image_pred
