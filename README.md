@@ -41,6 +41,7 @@
     - [3.2 Evaluation](#32-evaluation)
       - [3.2.1 Metrics](#321-metrics)
       - [3.2.2 Evaluation Script](#322-evaluation-script)
+    - [3.3 Evaluate RexSeek](#33-evaluate-rexseek)
 - [6. LICENSE](#6-license)
 - [BibTeX 📚](#bibtex-)
 
@@ -366,6 +367,26 @@ recall_precision_densityf1(
     pred_path=["path/to/your/predictions.jsonl"],
     dump_path="IDEA-Research/HumanRef/evaluation_results/your_model_results"
 )
+```
+
+### 3.3 Evaluate RexSeek
+
+First we need to run the following command to generate the predictions:
+```bash
+python rexseek/evaluation/evaluate_rexseek.py \
+    --model_path IDEA-Research/RexSeek-3B \
+    --image_folder IDEA-Research/HumanRef/images \
+    --question_file IDEA-Research/HumanRef/annotations.jsonl \
+    --answers_file IDEA-Research/HumanRef/evaluation_results/eval_rexseek/RexSeek-3B_results.jsonl \
+```
+
+Then we can run the following command to evaluate the RexSeek model:
+```bash
+python rexseek/metric/recall_precision_densityf1.py \
+  --gt_path IDEA-Research/HumanRef/annotations.jsonl \
+  --pred_path  IDEA-Research/HumanRef/evaluation_results/eval_rexseek/RexSeek-3B_results.jsonl\
+  --pred_names "RexSeek-3B" \
+  --dump_path IDEA-Research/HumanRef/evaluation_results/comparison
 ```
 
 # 6. LICENSE
