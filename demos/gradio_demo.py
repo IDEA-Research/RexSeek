@@ -7,16 +7,9 @@ from PIL import Image
 from segment_anything import SamPredictor, sam_model_registry
 
 from demos.rexseek_grounding_dino_spacy_sam import (
-    convert_all_cate_prediction_to_ans,
-    inference_gdino,
-    inference_rexseek,
-    inference_sam,
-    load_model,
-    load_rexseek_model,
-    modify_processor_resolution,
-    spacy_noun_phrases,
-    visualize_rexseek_output,
-)
+    convert_all_cate_prediction_to_ans, inference_gdino, inference_rexseek,
+    inference_sam, load_model, load_rexseek_model, modify_processor_resolution,
+    spacy_noun_phrases, visualize_rexseek_output)
 from rexseek.tools.visualize import visualize
 
 
@@ -175,14 +168,14 @@ def create_demo(models):
                     minimum=0.0,
                     maximum=1.0,
                     value=0.25,
-                    step=0.05,
+                    step=0.01,
                     label="Text Threshold for GroundingDINO",
                 )
                 box_threshold = gr.Slider(
                     minimum=0.0,
                     maximum=1.0,
                     value=0.25,
-                    step=0.05,
+                    step=0.01,
                     label="Box Threshold for GroundingDINO",
                 )
                 run_button = gr.Button("Run")
@@ -208,7 +201,7 @@ def create_demo(models):
                     "person",
                     "prisoners",
                     0.25,
-                    0.3,
+                    0.25,
                 ],
                 [
                     "demos/demo_images/demo3.jpg",
@@ -221,8 +214,8 @@ def create_demo(models):
                     "demos/demo_images/demo4.jpg",
                     "person",
                     "the person next to Trump",
-                    0.3,
-                    0.3,
+                    0.25,
+                    0.25,
                 ],
                 [
                     "demos/demo_images/demo5.jpg",

@@ -66,8 +66,8 @@ We aslo introduce HumanRef Benchmark, a comprehensive benchmark for human-centri
   - Celebrity Recognition
   - Rejection (hallucination detection)
 
-<!-- Add a video here
-[![Video Name](assets/teaser_cover.jpg)](https://github.com/user-attachments/assets/03d7e0af-1808-4ce8-bc67-854cf40a4972) -->
+
+[![Video Name](assets/video_teaser.jpg)](https://github.com/user-attachments/assets/e77ffd20-a26b-418d-8ae8-48565bfefdc7)
 
 ----
 
