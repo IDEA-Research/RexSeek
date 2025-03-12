@@ -9,7 +9,7 @@
 
 ![Static Badge](https://img.shields.io/badge/Rex-Seek-Red
 ) [![arXiv preprint](https://img.shields.io/badge/arxiv_2411.18363-blue%253Flog%253Darxiv
-)](https://arxiv.org/abs/2411.18363)  [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIDEA-Research%2FRexSeek&count_bg=%233FAEF1&title_bg=%23555555&icon=iconify.svg&icon_color=%23E7E7E7&title=Bros&edge_flat=false)](https://hits.seeyoufarm.com)[![Homepage](https://img.shields.io/badge/homepage-visit-blue)](https://deepdataspace.com/blog/dino-xseek) [![Static Badge](https://img.shields.io/badge/Try_Demo!-blue?logo=chainguard&logoColor=green)](https://cloud.deepdataspace.com/playground/dino-x)
+)](https://arxiv.org/abs/2503.08507)  [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIDEA-Research%2FRexSeek&count_bg=%233FAEF1&title_bg=%23555555&icon=iconify.svg&icon_color=%23E7E7E7&title=Bros&edge_flat=false)](https://hits.seeyoufarm.com)[![Homepage](https://img.shields.io/badge/homepage-visit-blue)](https://deepdataspace.com/blog/dino-xseek) [![Static Badge](https://img.shields.io/badge/Try_Demo!-blue?logo=chainguard&logoColor=green)](https://cloud.deepdataspace.com/playground/dino-x)
 
 </div>
 
@@ -23,25 +23,24 @@
   - [2.2 Verify Installation](#22-verify-installation)
 - [3. Usage 🚀](#3-usage-)
   - [3.1 Model Architecture](#31-model-architecture)
-  - [3.1 Combine RexSeek with GroundingDINO](#31-combine-rexseek-with-groundingdino)
-    - [3.1.1 Install GroundingDINO](#311-install-groundingdino)
-    - [3.1.2 Run the Demo](#312-run-the-demo)
-  - [3.2 Combine RexSeek with GroundingDINO and Spacy](#32-combine-rexseek-with-groundingdino-and-spacy)
-    - [3.2.1 Install Dependencies](#321-install-dependencies)
+  - [3.2 Combine RexSeek with GroundingDINO](#32-combine-rexseek-with-groundingdino)
+    - [3.2.1 Install GroundingDINO](#321-install-groundingdino)
     - [3.2.2 Run the Demo](#322-run-the-demo)
-  - [3.3 Combine RexSeek with GroundingDINO, Spacy and SAM](#33-combine-rexseek-with-groundingdino-spacy-and-sam)
+  - [3.3 Combine RexSeek with GroundingDINO and Spacy](#33-combine-rexseek-with-groundingdino-and-spacy)
     - [3.3.1 Install Dependencies](#331-install-dependencies)
     - [3.3.2 Run the Demo](#332-run-the-demo)
+  - [3.4 Combine RexSeek with GroundingDINO, Spacy and SAM](#34-combine-rexseek-with-groundingdino-spacy-and-sam)
+    - [3.4.1 Install Dependencies](#341-install-dependencies)
+    - [3.4.2 Run the Demo](#342-run-the-demo)
 - [4. Gradio Demos 🎨](#4-gradio-demos-)
   - [4.1 Gradio Demo for RexSeek + GroundingDINO + SAM](#41-gradio-demo-for-rexseek--groundingdino--sam)
 - [5. HumanRef Benchmark](#5-humanref-benchmark)
   - [5.1 Download](#51-download)
   - [5.2 Visualization](#52-visualization)
-    - [3.1 Visualization](#31-visualization)
-    - [3.2 Evaluation](#32-evaluation)
-      - [3.2.1 Metrics](#321-metrics)
-      - [3.2.2 Evaluation Script](#322-evaluation-script)
-    - [3.3 Evaluate RexSeek](#33-evaluate-rexseek)
+  - [5.3 Evaluation](#53-evaluation)
+    - [5.3.1 Metrics](#531-metrics)
+    - [5.3.2 Evaluation Script](#532-evaluation-script)
+    - [5.3.3 Evaluate RexSeek](#533-evaluate-rexseek)
 - [6. LICENSE](#6-license)
 - [BibTeX 📚](#bibtex-)
 
@@ -122,10 +121,10 @@ RexSeek consists of three key components:
     <ground>referring text</ground><objects><obj1><obj2>...</objects>
     ```
 
-## 3.1 Combine RexSeek with GroundingDINO 
+## 3.2 Combine RexSeek with GroundingDINO 
 In this example, we will use GroundingDINO to generate object proposals, and then use RexSeek to detect the objects.
 
-### 3.1.1 Install GroundingDINO
+### 3.2.1 Install GroundingDINO
 ```bash
 cd demos/
 git clone https://github.com/IDEA-Research/GroundingDINO.git
@@ -136,34 +135,34 @@ wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-
 cd ../../../
 ```
 
-### 3.1.2 Run the Demo
+### 3.2.2 Run the Demo
 ```bash
 python demos/rexseek_grounding_dino.py \
-    --image path/to/your/image.jpg \     # Input image path
-    --output path/to/output.jpg \        # Path to save visualization result
-    --referring "Please detect people wearing red shirts" \  # Natural language query
-    --objects "person" \                 # Objects to detect 
-    --text-threshold 0.25 \             # Confidence threshold for text matching
-    --box-threshold 0.25                # Confidence threshold for box detection
+    --image demos/demo_images/demo1.jpg \
+    --output demos/demo_images/demo1_result.jpg \
+    --referring "person that is giving a proposal" \
+    --objects "person" \
+    --text-threshold 0.25 \
+    --box-threshold 0.25
 ```
 
-## 3.2 Combine RexSeek with GroundingDINO and Spacy
+## 3.3 Combine RexSeek with GroundingDINO and Spacy
 In previous example, we need to explicitly specify object categories (like "person") for GroundingDINO to detect. However, we can make this process more automatic by using Spacy to extract nouns from the question as detection targets.
 
-### 3.2.1 Install Dependencies
+### 3.3.1 Install Dependencies
 ```bash
 pip install spacy
 python -m spacy download en_core_web_sm
 ```
 
-### 3.2.2 Run the Demo
+### 3.3.2 Run the Demo
 ```bash
 python demos/rexseek_grounding_dino_spacy.py \
-    --image path/to/your/image.jpg \     # Input image path
-    --output path/to/output.jpg \        # Path to save visualization result
-    --referring "Please detect people wearing red shirts and dogs playing in the park" \  # Natural language query
-    --text-threshold 0.25 \             # Confidence threshold for text matching
-    --box-threshold 0.25                # Confidence threshold for box detection
+    --image demos/demo_images/demo1.jpg \
+    --output demos/demo_images/demo1_result.jpg \
+    --referring "person that is giving a proposal" \
+    --text-threshold 0.25 \
+    --box-threshold 0.25  
 ```
 
 In this enhanced version:
@@ -173,10 +172,10 @@ In this enhanced version:
 - More flexible and natural interaction through questions
 
 
-## 3.3 Combine RexSeek with GroundingDINO, Spacy and SAM
+## 3.4 Combine RexSeek with GroundingDINO, Spacy and SAM
 In this example, we will use GroundingDINO to generate object proposals, then use Spacy to extract nouns from the question as detection targets, and finally use SAM to segment the objects.
 
-### 3.3.1 Install Dependencies
+### 3.4.1 Install Dependencies
 ```bash
 cd demos/
 git clone https://github.com/IDEA-Research/SAM.git  
@@ -187,18 +186,17 @@ wget -q https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth -P 
 cd ../../../
 ```
 
-### 3.3.2 Run the Demo
+### 3.4.2 Run the Demo
 ```bash
 python demos/rexseek_grounding_dino_spacy_sam.py \
-    --image path/to/your/image.jpg \     # Input image path
-    --output path/to/output.jpg \        # Path to save visualization result
-    --referring "Please detect people wearing red shirts and dogs playing in the park" \  # Natural language query
-    --text-threshold 0.25 \             # Confidence threshold for text matching
-    --box-threshold 0.25                # Confidence threshold for box detection
+    --image demos/demo_images/demo1.jpg \
+    --output demos/demo_images/demo1_result.jpg \
+    --referring "person that is giving a proposal" \
+    --text-threshold 0.25 \
+    --box-threshold 0.25
 ```
 
 # 4. Gradio Demos 🎨
-Here are [Workflow Readme](gradio_demos/gradio.md) you can follow to run the gradio demos.
 
 ## 4.1 Gradio Demo for RexSeek + GroundingDINO + SAM
 We provide a gradio demo for RexSeek + GroundingDINO + SAM. You can run the following command to start the gradio demo:
@@ -245,8 +243,6 @@ The dataset aims to advance research in human-centric visual understanding and r
 You can download the HumanRef Benchmark at [https://huggingface.co/datasets/IDEA-Research/HumanRef](https://huggingface.co/datasets/IDEA-Research/HumanRef).
 
 ## 5.2 Visualization
-
-## 3.1 Visualization
 HumanRef Benchmark contains 6 domains, each domain may have multiple sub-domains.
 
 | Domain | Subdomain | Num Referrings |
@@ -275,8 +271,8 @@ python rexseek/tools/visualize_humanref.py \
     --vis_mask True # True, False
 ```
 
-## 3.2 Evaluation
-### 3.2.1 Metrics
+## 5.3 Evaluation
+### 5.3.1 Metrics
 
 We evaluate the referring task using three main metrics: Precision, Recall, and DensityF1 Score.
 
@@ -311,7 +307,7 @@ where:
 
 This penalty factor reduces the score when models predict significantly more boxes than the actual number of people in the image, discouraging over-detection strategies.
 
-### 3.2.2 Evaluation Script
+### 5.3.2 Evaluation Script
 #### Prediction Format
 Before running the evaluation, you need to prepare your model's predictions in the correct format. Each prediction should be a JSON line in a JSONL file with the following structure:
 
@@ -369,7 +365,7 @@ recall_precision_densityf1(
 )
 ```
 
-### 3.3 Evaluate RexSeek
+### 5.3.3 Evaluate RexSeek
 
 First we need to run the following command to generate the predictions:
 ```bash
@@ -398,13 +394,13 @@ ChatRex is licensed under the IDEA License 1.0, Copyright (c) IDEA. All Rights R
 - For the low resolution vision encoder, we are using [openai/clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) which is licensed under [MIT LICENSE](https://github.com/openai/CLIP/blob/main/LICENSE)
 # BibTeX 📚
 ```
-@misc{jiang2024chatrextamingmultimodalllm,
-      title={ChatRex: Taming Multimodal LLM for Joint Perception and Understanding}, 
-      author={Qing Jiang and Gen luo and Yuqin Yang and Yuda Xiong and Yihao Chen and Zhaoyang Zeng and Tianhe Ren and Lei Zhang},
-      year={2024},
-      eprint={2411.18363},
+@misc{jiang2025referringperson,
+      title={Referring to Any Person}, 
+      author={Qing Jiang and Lin Wu and Zhaoyang Zeng and Tianhe Ren and Yuda Xiong and Yihao Chen and Qin Liu and Lei Zhang},
+      year={2025},
+      eprint={2503.08507},
       archivePrefix={arXiv},
       primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2411.18363}, 
+      url={https://arxiv.org/abs/2503.08507}, 
 }
 ```

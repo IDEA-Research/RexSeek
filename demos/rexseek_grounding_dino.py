@@ -53,7 +53,7 @@ def parse_args():
     parser.add_argument(
         "--box-threshold",
         type=float,
-        default=0.35,
+        default=0.25,
         help="box threshold for Grounding DINO",
     )
     parser.add_argument(

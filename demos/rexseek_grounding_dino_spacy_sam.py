@@ -1,3 +1,4 @@
+import argparse
 import re
 from typing import Any, Dict, List, Union
 
@@ -17,6 +18,64 @@ from rexseek.utils.inference_utils import (
 )
 
 nlp = spacy.load("en_core_web_sm")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="RexSeek Demo with Grounding DINO and Spacy"
+    )
+    parser.add_argument(
+        "--image", type=str, default="tests/images/Cafe.jpg", help="path to input image"
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="tests/images/Cafe_with_answer_gdino.jpeg",
+        help="path to output image",
+    )
+    parser.add_argument(
+        "--model-path",
+        type=str,
+        default="IDEA-Research/RexSeek-3B",
+        help="path to RexSeek model",
+    )
+    parser.add_argument(
+        "--gdino-config",
+        type=str,
+        default="demos/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py",
+        help="path to Grounding DINO config",
+    )
+    parser.add_argument(
+        "--gdino-weights",
+        type=str,
+        default="demos/GroundingDINO/weights/groundingdino_swint_ogc.pth",
+        help="path to Grounding DINO weights",
+    )
+    parser.add_argument(
+        "--sam-weights",
+        type=str,
+        default="demos/segment-anything/weights/sam_vit_h_4b8939.pth",
+        help="path to SAM weights",
+    )
+    parser.add_argument(
+        "--text-threshold",
+        type=float,
+        default=0.25,
+        help="text threshold for Grounding DINO",
+    )
+    parser.add_argument(
+        "--box-threshold",
+        type=float,
+        default=0.35,
+        help="box threshold for Grounding DINO",
+    )
+    parser.add_argument(
+        "--referring",
+        type=str,
+        default="male",
+        help="referring to detect in the image",
+    )
+    return parser.parse_args()
 
 
 def convert_all_cate_prediction_to_ans(prediction: str) -> Dict[str, List[str]]:
@@ -217,45 +276,43 @@ def inference_sam(
 
 
 if __name__ == "__main__":
-    question = (
-        "Please detect male in this image. Answer the question with object indexes."
-    )
-    sub_objects = spacy_noun_phrases(
-        question.replace("Please detect ", "").replace(
-            " in this image. Answer the question with object indexes.", ""
-        )
-    )
-    # start loading models
-    model_path = "IDEA-Research/RexSeek-3B"
+    args = parse_args()
+    referring = args.referring
+    sub_objects = spacy_noun_phrases(referring)
+    # Start loading models
     # load gdino model
     gdino_model = load_model(
-        "demos/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py",
-        "demos/GroundingDINO/weights/groundingdino_swint_ogc.pth",
+        args.gdino_config,
+        args.gdino_weights,
     ).to("cuda")
-
-    # load sam model
-    sam = sam_model_registry["vit_h"](
-        checkpoint="demos/segment-anything/weights/sam_vit_h_4b8939.pth"
-    )
-    sam.to("cuda")
-    sam_predictor = SamPredictor(sam)
 
     # load rexseek model
     tokenizer, rexseek_model, image_processor, context_len = load_rexseek_model(
-        model_path
+        args.model_path
     )
     image_processor, crop_size_raw = modify_processor_resolution(image_processor)
 
+    # load sam model
+    sam = sam_model_registry["vit_h"](checkpoint=args.sam_weights)
+    sam.to("cuda")
+    sam_predictor = SamPredictor(sam)
+
     # load image
-    test_image_path = "tests/images/Cafe.jpg"
+    test_image_path = args.image
     image = Image.open(test_image_path)
 
     # inference gdino
     candidate_boxes = inference_gdino(
-        image, sub_objects, gdino_model, TEXT_TRESHOLD=0.25, BOX_TRESHOLD=0.35
+        image,
+        sub_objects,
+        gdino_model,
+        TEXT_TRESHOLD=args.text_threshold,
+        BOX_TRESHOLD=args.box_threshold,
     )
+    print(f"Detected boxes: {candidate_boxes}")
 
     # inference rexseek
+    question = f"Please detect {args.referring} in this image. Answer the question with object indexes."
     answer = inference_rexseek(
         image,
         image_processor,
@@ -265,6 +322,7 @@ if __name__ == "__main__":
         candidate_boxes,
         question,
     )
+    print(f"RexSeek answer: {answer}")
     ans = convert_all_cate_prediction_to_ans(answer)
     pred_boxes = []
     for k, v in ans.items():
@@ -281,4 +339,5 @@ if __name__ == "__main__":
         masks=masks,
         prediction_text=answer,
     )
-    image_with_boxes.save("tests/images/Cafe_with_answer_gdino.jpeg")
+    image_with_boxes.save(args.output)
+    print(f"Results saved to: {args.output}")

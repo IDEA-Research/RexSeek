@@ -213,12 +213,8 @@ if __name__ == "__main__":
     args = parse_args()
 
     # Extract nouns from question using spacy
-    question = args.question
-    sub_objects = spacy_noun_phrases(
-        question.replace("Please detect ", "").replace(
-            " in this image. Answer the question with object indexes.", ""
-        )
-    )
+    referring = args.referring
+    sub_objects = spacy_noun_phrases(referring)
     print(f"Extracted objects to detect: {sub_objects}")
 
     # Start loading models

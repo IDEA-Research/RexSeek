@@ -192,6 +192,105 @@ def create_demo(models):
                 final_output = gr.Image(label="Final Result (RexSeek + SAM)")
                 llm_output = gr.Textbox(label="LLM Raw Output", interactive=False)
 
+        # Add examples section
+        gr.Markdown("## Examples")
+        examples = gr.Examples(
+            examples=[
+                [
+                    "demos/demo_images/demo1.jpg",
+                    "person",
+                    "person that is giving a proposal",
+                    0.25,
+                    0.25,
+                ],
+                [
+                    "demos/demo_images/demo2.jpg",
+                    "person",
+                    "prisoners",
+                    0.25,
+                    0.3,
+                ],
+                [
+                    "demos/demo_images/demo3.jpg",
+                    "person",
+                    "Mr Alvin KWOCK",
+                    0.25,
+                    0.25,
+                ],
+                [
+                    "demos/demo_images/demo4.jpg",
+                    "person",
+                    "the person next to Trump",
+                    0.3,
+                    0.3,
+                ],
+                [
+                    "demos/demo_images/demo5.jpg",
+                    "person",
+                    "homelander",
+                    0.25,
+                    0.25,
+                ],
+                [
+                    "demos/demo_images/demo6.jpg",
+                    "person",
+                    "male",
+                    0.25,
+                    0.25,
+                ],
+                [
+                    "demos/demo_images/demo7.jpg",
+                    "person",
+                    "female",
+                    0.25,
+                    0.25,
+                ],
+                [
+                    "demos/demo_images/demo8.jpg",
+                    "person",
+                    "walter white",
+                    0.25,
+                    0.25,
+                ],
+                [
+                    "demos/demo_images/demo9.jpg",
+                    "tomato",
+                    "unripe tomato",
+                    0.25,
+                    0.25,
+                ],
+                [
+                    "demos/demo_images/demo10.jpeg",
+                    "pigeon",
+                    "pigeon on the ground",
+                    0.25,
+                    0.25,
+                ],
+            ],
+            inputs=[
+                input_image,
+                gdino_prompt,
+                rexseek_prompt,
+                text_threshold,
+                box_threshold,
+            ],
+            outputs=[gdino_output, final_output, llm_output],
+            fn=lambda img, p1, p2, tt, bt: process_image(
+                img,
+                p1,
+                p2,
+                tt,
+                bt,
+                gdino_model,
+                sam_predictor,
+                tokenizer,
+                rexseek_model,
+                image_processor,
+                crop_size_raw,
+            ),
+            cache_examples=False,
+        )
+
         run_button.click(
             fn=lambda img, p1, p2, tt, bt: process_image(
                 img,
