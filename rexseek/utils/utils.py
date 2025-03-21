@@ -6,7 +6,7 @@ import sys
 
 import requests
 
-from chatrex.utils.constants import LOGDIR
+from rexseek.utils.constants import LOGDIR
 
 server_error_msg = (
     "**NETWORK ERROR DUE TO HIGH TRAFFIC. PLEASE REGENERATE OR REFRESH THIS PAGE.**"

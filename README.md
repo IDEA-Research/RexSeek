@@ -73,18 +73,19 @@ We aslo introduce HumanRef Benchmark, a comprehensive benchmark for human-centri
 
 # 2. Installation 🛠️
 ```bash
-conda install -n rexseek python=3.9
+conda create -n rexseek CUDA_VISIBLE_DEVICES=0 python=3.10
+conda activate rexseek
 pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu121
 pip install -v -e .
 ```
 
 ## 2.1 Download Pre-trained Models
 We provide model checkpoints for ***RexSeek-3B***. You can download the pre-trained models from the following links:
-- [ChatRex-3B Checkpoint](https://huggingface.co/IDEA-Research/RexSeek-3B)
+- [RexSeek-3B Checkpoint](https://huggingface.co/IDEA-Research/RexSeek-3B)
 
 Or you can also using the following command to download the pre-trained models:
 ```bash
-# Download ChatRex checkpoint from Hugging Face
+# Download RexSeek checkpoint from Hugging Face
 git lfs install
 git clone https://huggingface.co/IDEA-Research/RexSeek-3B IDEA-Research/RexSeek-3B
 ```
@@ -92,7 +93,7 @@ git clone https://huggingface.co/IDEA-Research/RexSeek-3B IDEA-Research/RexSeek-
 ## 2.2 Verify Installation
 To verify the installation, run the following command:
 ```bash
-python tests/test_local_load.py
+CUDA_VISIBLE_DEVICES=0 python tests/test_local_load.py
 ```
 
 If the installation is successful, you will get a visualization image in `tests/images` folder.
@@ -137,7 +138,7 @@ cd ../../../
 
 ### 3.2.2 Run the Demo
 ```bash
-python demos/rexseek_grounding_dino.py \
+CUDA_VISIBLE_DEVICES=0 python demos/rexseek_grounding_dino.py \
     --image demos/demo_images/demo1.jpg \
     --output demos/demo_images/demo1_result.jpg \
     --referring "person that is giving a proposal" \
@@ -152,12 +153,12 @@ In previous example, we need to explicitly specify object categories (like "pers
 ### 3.3.1 Install Dependencies
 ```bash
 pip install spacy
-python -m spacy download en_core_web_sm
+CUDA_VISIBLE_DEVICES=0 python -m spacy download en_core_web_sm
 ```
 
 ### 3.3.2 Run the Demo
 ```bash
-python demos/rexseek_grounding_dino_spacy.py \
+CUDA_VISIBLE_DEVICES=0 python demos/rexseek_grounding_dino_spacy.py \
     --image demos/demo_images/demo1.jpg \
     --output demos/demo_images/demo1_result.jpg \
     --referring "person that is giving a proposal" \
@@ -188,7 +189,7 @@ cd ../../../
 
 ### 3.4.2 Run the Demo
 ```bash
-python demos/rexseek_grounding_dino_spacy_sam.py \
+CUDA_VISIBLE_DEVICES=0 python demos/rexseek_grounding_dino_spacy_sam.py \
     --image demos/demo_images/demo1.jpg \
     --output demos/demo_images/demo1_result.jpg \
     --referring "person that is giving a proposal" \
@@ -201,7 +202,7 @@ python demos/rexseek_grounding_dino_spacy_sam.py \
 ## 4.1 Gradio Demo for RexSeek + GroundingDINO + SAM
 We provide a gradio demo for RexSeek + GroundingDINO + SAM. You can run the following command to start the gradio demo:
 ```bash
-python demos/gradio_demo.py \
+CUDA_VISIBLE_DEVICES=0 python demos/gradio_demo.py \
     --rexseek-path "IDEA-Research/RexSeek-3B" \
     --gdino-config "demos/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py" \
     --gdino-weights "demos/GroundingDINO/weights/groundingdino_swint_ogc.pth" \
@@ -261,7 +262,7 @@ HumanRef Benchmark contains 6 domains, each domain may have multiple sub-domains
 To visualize the dataset, you can run the following command:
 
 ```bash
-python rexseek/tools/visualize_humanref.py \
+CUDA_VISIBLE_DEVICES=0 python rexseek/tools/visualize_humanref.py \
     --anno_path "IDEA-Research/HumanRef/annotations.jsonl" \
     --image_root_dir "IDEA-Research/HumanRef/images" \
     --domain_anme "attribute" \ # attribute, position, interaction, reasoning, celebrity, rejection
@@ -329,7 +330,7 @@ For rejection cases (where no humans should be detected), you should either:
 #### Running the Evaluation
 You can run the evaluation script using the following command:
 ```bash
-python rexseek/metric/recall_precision_densityf1.py \
+CUDA_VISIBLE_DEVICES=0 python rexseek/metric/recall_precision_densityf1.py \
   --gt_path IDEA-Research/HumanRef/annotations.jsonl \
   --pred_path path/to/your/predictions.jsonl \
   --pred_names "Your Model Name" \
@@ -347,7 +348,7 @@ Evaluating Multiple Models:
 To compare multiple models, provide multiple prediction files:
 
 ```bash
-python rexseek/metric/recall_precision_densityf1.py \
+CUDA_VISIBLE_DEVICES=0 python rexseek/metric/recall_precision_densityf1.py \
   --gt_path IDEA-Research/HumanRef/annotations.jsonl \
   --pred_path model1_results.jsonl model2_results.jsonl model3_results.jsonl \
   --pred_names "Model 1" "Model 2" "Model 3" \
@@ -355,7 +356,7 @@ python rexseek/metric/recall_precision_densityf1.py \
 ```
 
 #### Programmatic Usage
-```python
+```CUDA_VISIBLE_DEVICES=0 python
 from rexseek.metric.recall_precision_densityf1 import recall_precision_densityf1
 
 recall_precision_densityf1(
@@ -369,7 +370,7 @@ recall_precision_densityf1(
 
 First we need to run the following command to generate the predictions:
 ```bash
-python rexseek/evaluation/evaluate_rexseek.py \
+CUDA_VISIBLE_DEVICES=0 python rexseek/evaluation/evaluate_rexseek.py \
     --model_path IDEA-Research/RexSeek-3B \
     --image_folder IDEA-Research/HumanRef/images \
     --question_file IDEA-Research/HumanRef/annotations.jsonl \
@@ -387,7 +388,7 @@ python rexseek/metric/recall_precision_densityf1.py \
 
 # 6. LICENSE
 
-ChatRex is licensed under the IDEA License 1.0, Copyright (c) IDEA. All Rights Reserved. Note that this project utilizes certain datasets and checkpoints that are subject to their respective original licenses. Users must comply with all terms and conditions of these original licenses including but not limited to the:
+RexSeek is licensed under the IDEA License 1.0, Copyright (c) IDEA. All Rights Reserved. Note that this project utilizes certain datasets and checkpoints that are subject to their respective original licenses. Users must comply with all terms and conditions of these original licenses including but not limited to the:
 - [OpenAI Terms of Use](https://openai.com/policies/terms-of-use) for the dataset. 
 - For the LLM used in this project, the model is [Qwen/Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct), which is licensed under [Qwen RESEARCH LICENSE AGREEMENT](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/blob/main/LICENSE).
 - For the high resolution vision encoder, we are using [laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg](https://huggingface.co/laion/CLIP-convnext_large_d.laion2B-s26B-b102K-augreg) which is licensed under [MIT LICENSE](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/mit.md).

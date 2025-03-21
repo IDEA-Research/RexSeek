@@ -8,7 +8,7 @@ import torch
 from PIL import Image
 from transformers import StoppingCriteria
 
-from chatrex.utils.constants import (
+from rexseek.utils.constants import (
     DEFAULT_IMAGE_TOKEN,
     DEFAULT_OBJECT_FEATURE_TOKEN,
     DEFAULT_OBJECT_INDEX,

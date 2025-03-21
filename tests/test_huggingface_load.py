@@ -16,7 +16,7 @@ if __name__ == "__main__":
     )
 
     print(f"loading RexSeek-3B model...")
-    # load chatrex model
+    # load rexseek model
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
         trust_remote_code=True,

@@ -59,7 +59,7 @@ def load_rexseek_model(
                 tokenizer.add_tokens([add_token], special_tokens=True)
 
     model = RexSeekQwenForCausalLM.from_pretrained(
-        model_path, low_cpu_mem_usage=True, delay_load=False, **kwargs
+        model_path, low_cpu_mem_usage=True, **kwargs
     )
 
     image_processor = None

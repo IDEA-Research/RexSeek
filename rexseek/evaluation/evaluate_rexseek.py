@@ -8,7 +8,6 @@ import numpy as np
 import shortuuid
 import torch
 import torchvision.transforms.functional as F
-from evaluation.datasets import ChatRexTaskEvalDataset
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
@@ -363,7 +362,7 @@ def create_data_loader(
         SEP="\n",
         STOP_WORDS=["<|im_end|>", "<|endoftext|>"],
     )
-    dataset = ChatRexTaskEvalDataset(
+    dataset = RexSeekEvalDataset(
         question_file,
         image_folder,
         template,

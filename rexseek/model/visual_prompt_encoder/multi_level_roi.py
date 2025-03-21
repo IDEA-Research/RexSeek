@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.ops import roi_align
 
-from chatrex.model.utils import gen_sineembed_for_position
+from rexseek.model.utils import gen_sineembed_for_position
 
 
 class MultiLevelROIVisualPrompt(nn.Module):
