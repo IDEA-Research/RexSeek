@@ -179,9 +179,9 @@ In this example, we will use GroundingDINO to generate object proposals, then us
 ### 3.4.1 Install Dependencies
 ```bash
 cd demos/
-git clone https://github.com/IDEA-Research/SAM.git  
-cd SAM
-pip install -v -e .
+git clone git@github.com:facebookresearch/segment-anything.git
+cd segment-anything
+pip install -e .
 mkdir weights
 wget -q https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth -P weights
 cd ../../../
