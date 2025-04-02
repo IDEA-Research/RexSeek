@@ -88,8 +88,6 @@ class RexSeekQwenForCausalLM(Qwen2ForCausalLM):
         super(RexSeekQwenForCausalLM, self).__init__(config)
         self.model = Qwen2Model(config)  # llm
         if hasattr(config, "mm_vision_tower"):
-            if delay_load:
-                raise ValueError("delay_load is not supported for vision modules")
             self.vision_tower = build_vision_tower(
                 config, freeze_vision_tower=False, delay_load=delay_load
             )  # vision_tower
