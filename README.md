@@ -56,7 +56,7 @@ RexSeek is a Multimodal Large Language Model (MLLM) designed to detect people or
 - **Strong Language Understanding**: Leverages advanced LLM capabilities for complex description comprehension
 
 ### The HumanRef Benchmark
-We aslo introduce HumanRef Benchmark, a comprehensive benchmark for human-centric referring tasks containing:
+We also introduce HumanRef Benchmark, a comprehensive benchmark for human-centric referring tasks containing:
 - 6000 referring expressions
 - Average of 2.2 instances per expression
 - Covers 6 key aspects of human referring:
@@ -267,8 +267,8 @@ To visualize the dataset, you can run the following command:
 CUDA_VISIBLE_DEVICES=0 python rexseek/tools/visualize_humanref.py \
     --anno_path "IDEA-Research/HumanRef/annotations.jsonl" \
     --image_root_dir "IDEA-Research/HumanRef/images" \
-    --domain_anme "attribute" \ # attribute, position, interaction, reasoning, celebrity, rejection
-    --sub_domain_anme "1000_attribute_retranslated_with_mask" \ # 1000_attribute_retranslated_with_mask, 500_inner_position_data_with_mask, 500_outer_position_data_with_mask, 1000_celebrity_data_with_mask, 500_inner_interaction_data_with_mask, 500_outer_interaction_data_with_mask, 229_outer_position_two_stage_with_mask, 271_positive_then_negative_reasoning_with_mask, 500_inner_position_two_stage_with_mask, 1000_rejection_referring_with_mask
+    --domain_name "attribute" \ # attribute, position, interaction, reasoning, celebrity, rejection
+    --sub_domain_name "1000_attribute_retranslated_with_mask" \ # 1000_attribute_retranslated_with_mask, 500_inner_position_data_with_mask, 500_outer_position_data_with_mask, 1000_celebrity_data_with_mask, 500_inner_interaction_data_with_mask, 500_outer_interaction_data_with_mask, 229_outer_position_two_stage_with_mask, 271_positive_then_negative_reasoning_with_mask, 500_inner_position_two_stage_with_mask, 1000_rejection_referring_with_mask
     --vis_path "IDEA-Research/HumanRef/visualize" \
     --num_images 50 \
     --vis_mask True # True, False
