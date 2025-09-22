@@ -41,7 +41,8 @@
     - [5.3.1 Metrics](#531-metrics)
     - [5.3.2 Evaluation Script](#532-evaluation-script)
     - [5.3.3 Evaluate RexSeek](#533-evaluate-rexseek)
-- [6. LICENSE](#6-license)
+- [6. HumanRef Datasets](#6-humanref-datasets)
+- [7. LICENSE](#7-license)
 - [BibTeX 📚](#bibtex-)
 
 ----
@@ -387,7 +388,11 @@ python rexseek/metric/recall_precision_densityf1.py \
   --dump_path IDEA-Research/HumanRef/evaluation_results/comparison
 ```
 
-# 6. LICENSE
+# 6. HumanRef Datasets
+
+45K data with CoT annotations are available at [https://huggingface.co/datasets/IDEA-Research/HumanRef-45K](https://huggingface.co/datasets/IDEA-Research/HumanRef-45K).
+
+# 7. LICENSE
 
 RexSeek is licensed under the IDEA License 1.0, Copyright (c) IDEA. All Rights Reserved. Note that this project utilizes certain datasets and checkpoints that are subject to their respective original licenses. Users must comply with all terms and conditions of these original licenses including but not limited to the:
 - [OpenAI Terms of Use](https://openai.com/policies/terms-of-use) for the dataset. 
